@@ -5,6 +5,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Controller
 @Log4j2
 public class SampleController {
@@ -13,6 +16,14 @@ public class SampleController {
     public void hello(Model model) {
         log.info("hello 확인.....");
         model.addAttribute("msg", "헬로우 월드 Hello World");
+    }
+
+    // templates/ex/ex1.html 생성해야함.
+    @GetMapping("/ex/ex1")
+    public void ex1(Model model) {
+        log.info("/ex/ex1 확인.....");
+        List<String> strList = Arrays.asList("111", "BBB", "CCC");
+        model.addAttribute("strList", strList);
     }
 
 }
