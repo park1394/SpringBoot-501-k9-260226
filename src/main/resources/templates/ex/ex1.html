@@ -66,5 +66,15 @@
         </th:block>
     </li>
 </ul>
+
+<h3>타임리프로 링크 이동해보기.예시 </h3>
+<a th:href="@{/hello}">/hello 이동하기. </a>
+
+<h3>링크 이동시, 쿼리 스트링 처리,
+    예시</h3>
+<a th:href="@{/hello(name='aaa', age=20)}">/hello 이동하기. </a>
+
+<h3>링크 이동시, 쿼리 스트링 처리, 배열 형식으로 처리,</h3>
+<a th:href="@{/hello(types=${ {'11','22','33'} }, age=20)}">/hello 이동하기. </a>
 </body>
 </html>
