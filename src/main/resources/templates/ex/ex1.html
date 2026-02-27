@@ -32,11 +32,12 @@
 
 <h3>반복문에 status 변수 를 이용해보기.</h3>
 <ul>
-    <li th:each="str,status : ${strList}" ></li>
+    <li th:each="str,status : ${strList}" >
     status 의 index 속성 : [[${status.index}]] --
     status 의 even 속성 : [[${status.even}]] --
     status 의 odd 속성 : [[${status.odd}]]
     : [[${str}]]
+    </li>
 </ul>
 </body>
 </html>
