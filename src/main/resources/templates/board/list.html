@@ -15,6 +15,7 @@
                     <h5 class="card-title">검색 및 필터</h5>
 
                     <form action="/board/list" method="get">
+                        <input type="hidden" name="size" th:value="${pageRequestDTO.size}">
                         <div class="input-group">
 
                             <select class="form-select" name="type" style="max-width: 150px;">
@@ -117,7 +118,7 @@
         const formObj = document.querySelector("form")
 
         // innerHTML 속성을 이용해서, page 정보를 재전달.
-        formObj.innerHTML += `<input type='hidden' name='page' value='\${num}'>`
+        formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`
 
         formObj.submit()
     }, false)
