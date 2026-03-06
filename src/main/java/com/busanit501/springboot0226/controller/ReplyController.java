@@ -53,8 +53,10 @@ public class ReplyController {
             throw new BindException(bindingResult);
         }
 //        Long rno = replyService.register(replyDTO);
-//        Map<String,Long> map = Map.of("rno",rno);
-        return null;
+        Map<String,Long> map = Map.of("rno",123L);
+        // ResponseEntity.ok : 200, 정상 응답 코드 의미,
+        // map : 데이터를 같이 전달.
+        return ResponseEntity.ok(map);
     }
 }
 
