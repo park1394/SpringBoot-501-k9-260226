@@ -93,5 +93,19 @@ public class ReplyController {
         ReplyDTO replyDTO = replyService.read(rno);
         return replyDTO;
     }
+
+    @Tag(name = "댓글 삭제 Delete 방식",
+            description = "댓글 번호 rno 가 필요함. 화면에서 데이터를 보내줘야 합니다. " +
+                    "댓글 삭제 진행함, Delete 형식으로")
+    @DeleteMapping(value = "/{rno}")
+    public Map<String, Long> remove(
+            @PathVariable("rno") Long rno
+    )  {
+        log.info(" ReplyController 댓글 삭제 , rno 확인 : " + rno );
+        replyService.remove(rno);
+        Map<String, Long> resultMap = new HashMap<>();
+        resultMap.put("rno", rno);
+        return resultMap;
+    }
 }
 
