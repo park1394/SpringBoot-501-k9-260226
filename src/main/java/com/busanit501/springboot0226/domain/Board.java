@@ -3,13 +3,17 @@ package com.busanit501.springboot0226.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 //추가 기능 : 애너테이션 옵션 추가.
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+// 추가작업 ,
+@ToString(exclude = "imageSet" )// Board 객체를 문자열로 출력시, 첨부된 이미지들은 출력을 안함.
 public class Board extends BaseEntity {
 
     // 엔티티 클래스는 실제 데이터 베이스의 테이블을 만드는 효과이므로, 반드시 pk 를 생성해야함.
@@ -36,4 +40,11 @@ public class Board extends BaseEntity {
         this.title = title;
         this.content = content;
     }
+
+    //추가작업
+    // 연관관계 설정 2번,
+    // 게시글 1 <----> N 첨부 이미지, 양쪽에서 연관 관계 설정 모두 했음. 양방향.
+    @OneToMany
+    @Builder.Default
+    private Set<BoardImage> imageSet = new HashSet<>();
 }
