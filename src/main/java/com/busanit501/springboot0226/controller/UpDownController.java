@@ -2,6 +2,7 @@ package com.busanit501.springboot0226.controller;
 
 import com.busanit501.springboot0226.dto.ReplyDTO;
 import com.busanit501.springboot0226.dto.upload.UploadFileDTO;
+import com.busanit501.springboot0226.dto.upload.UploadResultDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import lombok.extern.log4j.Log4j2;
@@ -14,6 +15,8 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -28,7 +31,8 @@ public class UpDownController {
     @Tag(name = "이미지 파일 업로드 테스트",
             description = "post 방식으로 멀티파트 폼에 이미지를 첨부해서 서버에 전달하기. ")
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String upload(
+//    public String upload(
+    public List<UploadResultDTO> upload(
             // 화면에서 전달된 이미지 파일들을 받기. files
            UploadFileDTO uploadFileDTO
     )  {
@@ -36,6 +40,10 @@ public class UpDownController {
 
         // 첨부된 이미지들의 파일명 확인 해보기.
          if(uploadFileDTO.getFiles() != null) {
+
+             // 추가작업,
+             final List<UploadResultDTO> list = new ArrayList<>();
+
              uploadFileDTO.getFiles().forEach(file -> {
                  // 원본 이미지 파일명을 , 서버의 로그로 확인.
                  log.info(file.getOriginalFilename());
@@ -51,6 +59,9 @@ public class UpDownController {
                  Path savePath = Paths.get(uploadPath, uuid+"_"+originName);
                  log.info(" UpDownController 이미지 첨부 경로 확인(uuid이용) savePath : " + savePath.toString()  );
 
+                 // 추가작업,
+                 boolean image = false;
+
                  try {
                      // 실제 경로에, 이미지 파일 저장.
                      file.transferTo(savePath);
@@ -60,6 +71,9 @@ public class UpDownController {
                      // c:\\upload\\springTest\\5b418a60-407e-406e-991e-db88d35ea426_크롬기준-로컬스토리지 저장소 확인 방법.PNG
                      // image/png, image/jpeg, image/jpg , 이런 형식으로 서버에 전달이 됩니다.
                      if(Files.probeContentType(savePath).startsWith("image")) {
+                         // 추가작업,
+                         image = true;
+
                          // 자바에서, 새로운 파일을 생성하는 도구,
                          // 예시 : s_5b418a60-407e-406e-991e-db88d35ea426_크롬기준-로컬스토리지 저장소 확인 방법.PNG
                          // 주의사항은 파일명에 앞에 s_ 있는지를 확인 잘해야함. 우리는 썸네일로 약속.
@@ -74,8 +88,18 @@ public class UpDownController {
                      e.printStackTrace();
                  }
 
-             });
-         }
+                 //추가작업
+                 list.add(
+                         UploadResultDTO.builder()
+                                 .uuid(uuid)
+                                 .fileName(originName)
+                                 .img(image)
+                                 .build()
+                 );
+
+             }); // end each
+             return list;
+         } //end if
 
         return null;
     }
