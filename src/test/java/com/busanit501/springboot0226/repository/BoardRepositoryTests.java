@@ -143,11 +143,16 @@ public class BoardRepositoryTests {
     public void testReadWithImage() {
         // 샘플테이블에서, 게시글 번호를 조회.
         // 각자 데이터 베이스 이용해야함.
-        Optional<Board> result = boardRepository.findById(1L);
+//        Optional<Board> result = boardRepository.findById(1L);
+        // 만들어둔 메서드 사용.
+        Optional<Board> result = boardRepository.findByIdWithImages(1L);
         Board board = result.orElseThrow();
         log.info("board 조회 해보기 : " + board);
+
+
+
         log.info("====================================== ");
-        log.info("board에 첨부된 이미지들을 조회 해보기 : " + board.getImageSet());
+//        log.info("board에 첨부된 이미지들을 조회 해보기 : " + board.getImageSet());
         // 에러가 발생함. no session
 
         // 첨부 이미지를 확인
