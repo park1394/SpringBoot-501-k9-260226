@@ -2,6 +2,7 @@ package com.busanit501.springboot0226.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -55,6 +56,8 @@ public class Board extends BaseEntity {
     //추가
     // 고악 객체 제거 속성 이용.
     @Builder.Default
+    // 한번에 모아서 실행을 해보자.
+    @BatchSize(size = 20)
     private Set<BoardImage> imageSet = new HashSet<>();
 
     // 이미지 추가하는 메서드
