@@ -1,6 +1,8 @@
 package com.busanit501.springboot0226.repository;
 
 import com.busanit501.springboot0226.domain.Board;
+
+import com.busanit501.springboot0226.domain.BoardImage;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -130,5 +133,29 @@ public class BoardRepositoryTests {
         boardRepository.save(board);
 
     }
+
+    // @EntityGraph 이용한 호출 , 즉 N+1 문제 해결책.
+    // 조인해서, 두 테이블을 붙여서, 한번만 호출할 예정.
+    // 이 과정을 보여주기.
+    @Test
+    @Transactional
+    //import org.springframework.transaction.annotation.Transactional;
+    public void testReadWithImage() {
+        // 샘플테이블에서, 게시글 번호를 조회.
+        // 각자 데이터 베이스 이용해야함.
+        Optional<Board> result = boardRepository.findById(1L);
+        Board board = result.orElseThrow();
+        log.info("board 조회 해보기 : " + board);
+        log.info("====================================== ");
+        log.info("board에 첨부된 이미지들을 조회 해보기 : " + board.getImageSet());
+        // 에러가 발생함. no session
+
+        // 첨부 이미지를 확인
+        for( BoardImage boardImage: board.getImageSet()) {
+            log.info("게시글에 첨부된 이미지 조회 : " + boardImage);
+        }
+
+    }
+
 
 }
