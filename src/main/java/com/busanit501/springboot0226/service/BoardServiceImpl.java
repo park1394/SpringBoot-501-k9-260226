@@ -1,10 +1,7 @@
 package com.busanit501.springboot0226.service;
 
 import com.busanit501.springboot0226.domain.Board;
-import com.busanit501.springboot0226.dto.BoardDTO;
-import com.busanit501.springboot0226.dto.BoardListReplyCountDTO;
-import com.busanit501.springboot0226.dto.PageRequestDTO;
-import com.busanit501.springboot0226.dto.PageResponseDTO;
+import com.busanit501.springboot0226.dto.*;
 import com.busanit501.springboot0226.repository.BoardRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -107,5 +104,10 @@ public class BoardServiceImpl implements BoardService{
                 .build();
 
         return pageResponseDTO;
+    }
+
+    @Override
+    public PageResponseDTO<BoardListAllDTO> listWithAll(PageRequestDTO pageRequestDTO) {
+        return null;
     }
 }

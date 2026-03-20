@@ -3,6 +3,7 @@ package com.busanit501.springboot0226.repository.search;
 import com.busanit501.springboot0226.domain.Board;
 import com.busanit501.springboot0226.domain.QBoard;
 import com.busanit501.springboot0226.domain.QReply;
+import com.busanit501.springboot0226.dto.BoardListAllDTO;
 import com.busanit501.springboot0226.dto.BoardListReplyCountDTO;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
@@ -93,6 +94,8 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
         return result;
     }
 
+    // 검색시, 검색어 조건, 댓글의 갯수 첨부,
+    // 프로젝션을 이용해서, dto <-> entity 클래스 간에 서로 자동 변환
     @Override
     public Page<BoardListReplyCountDTO> searchWithReplyCount(String[] types, String keyword, Pageable pageable) {
 
@@ -104,6 +107,13 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
         //  Board 테이블의 bno 와, reply의 board.bno 같은 경우, 합친다.
         // 하나의 테이블에, Board 테이블 내용도 있고, Reply 테이블 내용도 같이 있어요.
         query.leftJoin(reply).on(reply.board.eq(board));
+        // bno  title  content writer , rno  bno  replyText replyer
+        // 121   test   test    lsy      1    121    댓글    댓글작성자
+        // 121   test   test    lsy      2    121    댓글2    댓글작성자2
+
+        // 120   test3   test3    lsy3   3    120    댓글33    댓글작성자33
+        // 120   test3   test3    lsy3   4    120    댓글44    댓글작성자44
+
         query.groupBy(board);
 
         // 검색에 관련된 조건부 처리 , 이미 했음, 가져오기. 위의 메서드에 있음.
@@ -163,7 +173,7 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
     }
 
     @Override
-    public Page<BoardListReplyCountDTO> searchWithAll(String[] types, String keyword, Pageable pageable) {
+    public Page<BoardListAllDTO> searchWithAll(String[] types, String keyword, Pageable pageable) {
         QBoard board = QBoard.board;
         QReply reply = QReply.reply;
 
