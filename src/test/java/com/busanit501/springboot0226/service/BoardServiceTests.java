@@ -108,5 +108,38 @@ public class BoardServiceTests {
         }
     }
 
+    // 첨부이미지를 가지고서, 수정 테스트
+    // 수정, 첨부 이미지를 수정 할 경우,
+
+    @Test
+    public void testUpdateWithImages() {
+        // 변경시, 변경할 더미 데이터, 임시, 601L
+// 화면에서 넘어온 더미 데이터 만들기. DTO 타입.
+        BoardDTO boardDTO = BoardDTO.builder()
+                .bno(2L)
+                .title("제목 : 수정버전")
+                .content("내용 : 수정버전")
+                .build();
+
+        // 더미 데이터에 첨부 이미지 파일 추가.
+        // 경우의수,
+        // 기존의 첨부 이미지들을 모두 지우고, 새로운 첨부 이미지를 추가.
+        // 1) 기존 첨부이미지 3장, 모두 교체할 경우.
+        // 예시)1.jpg,2.jpg,3.jpg -> 4.jpg, 5.jpg
+
+        // 2) 기존 첨부이미지 3장, 2장 삭제, 1장 교체할 경우.
+        // 예시)1.jpg(유지),2.jpg(삭제),3.jpg(삭제)
+        //  4.jpg(추가), 5.jpg(추가) -> 1.jpg(유지), 4.jpg(추가), 5.jpg(추가)
+        boardDTO.setFileNames(
+                Arrays.asList(
+                        UUID.randomUUID()+"_sampleImage.png",
+                        UUID.randomUUID()+"_sampleImage2.png"
+                )
+        );
+
+        //디비에서 조회하기.
+        boardService.modify(boardDTO);
+    }
+
 
 }

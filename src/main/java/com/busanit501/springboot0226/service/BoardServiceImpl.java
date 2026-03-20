@@ -53,6 +53,21 @@ public class BoardServiceImpl implements BoardService{
         //2)
         board.change(boardDTO.getTitle(), boardDTO.getContent());
         //3)
+        // 첨부 이미지를 이용한 수정작업,
+        // 기존 이미지를 모두 삭제 후, 새로운 이미지 추가
+        board.clearImages();// 첨부 이미지의 부모 게시글 번호를 null 로 변경, 고아객체,
+
+        // 화면으로부터, 첨부된 이미지가 있다면, 그러면, 추가.
+        if(boardDTO.getFileNames() != null) {
+            for(String fileName : boardDTO.getFileNames()) {
+                // 예시
+                // fileName : 5b418a60-407e-406e-991e-db88d35ea426_크롬기준-로컬스토리지 저장소 확인 방법.PNG
+                // fileName : UUID_원본파일명
+                String[] arr = fileName.split("_");
+                board.addImage(arr[0], arr[1]);
+            }
+        }
+
         boardRepository.save(board);
     }
 
