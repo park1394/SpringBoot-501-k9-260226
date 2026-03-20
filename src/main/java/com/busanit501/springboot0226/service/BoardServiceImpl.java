@@ -77,7 +77,6 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public void remove(Long bno) {
-        boardRepository.deleteById(bno);
         // 게시글을 삭제하면, 댓글은
         // 댓글의 존재 여부를 확인 후, 있으면 삭제하기.
         List<Reply> result = replyRepository.findByBoard_Bno(bno);
