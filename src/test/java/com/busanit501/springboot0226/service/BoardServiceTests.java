@@ -160,12 +160,12 @@ public class BoardServiceTests {
                 PageRequestDTO.builder()
                         .page(1)
                         .type("tcw")
-                        .keyword("ㅇㅇ")
+                        .keyword("샘플")
                         .size(10)
                         .build();
 
         PageResponseDTO<BoardListAllDTO> list = boardService.listWithAll(pageRequestDTO);
-        log.info("list: " + list.toString());
+        log.info("testSelectAllBoardWithReplyCountAndImage _ list: " + list.toString());
     }
 
 }
