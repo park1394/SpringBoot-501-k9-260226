@@ -5,6 +5,9 @@ import com.busanit501.springboot0226.service.BoardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,6 +16,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Controller
 @RequestMapping("/board")
 @Log4j2
@@ -20,6 +29,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class BoardController {
 
     private final BoardService boardService;
+
+    // 물리 저장소 경로를 불러오기.
+    @Value("${com.busanit501.upload.path}")
+    private String uploadPath;
 
     @GetMapping("/list")
     public void list(PageRequestDTO pageRequestDTO, Model model) {
@@ -90,12 +103,59 @@ public class BoardController {
     }
 
     @PostMapping("/remove")
-    public String remove(Long bno,  RedirectAttributes redirectAttributes) {
+    // 삭제시, 화면에서 넘겨받은 , 삭제할 이미지 파일을 받을 준비 : BoardDTO 를 이용함.
+//    public String remove(Long bno,  RedirectAttributes redirectAttributes) {
+    public String remove(BoardDTO boardDTO,  RedirectAttributes redirectAttributes) {
         log.info("BoardController 에서, remove 작업중");
 
+        Long bno = boardDTO.getBno();
         boardService.remove(bno);
+
+        // 게시글에 첨부된 이미지 파일도 삭제.
+        //추가
+        List<String> fileNames = boardDTO.getFileNames();
+        if(fileNames != null && fileNames.size() > 0){
+            // uploadController 가져와서 사용한다.
+            removeFiles(fileNames);
+        }
+
         redirectAttributes.addAttribute("result","removed");
         return "redirect:/board/list";
+    }
+
+    // 추가, 이미지 파일 삭제하는 함수
+    // 물리서버 , 첨부 이미지 삭제 함수.
+    public void removeFiles(List<String> fileNames) {
+        for (String filename : fileNames) {
+            Resource resource = new FileSystemResource(uploadPath+ File.separator+filename);
+//            String resourceName = resource.getFilename();
+
+            // 리턴 타입 Map 전달,
+            Map<String,Boolean> resultMap = new HashMap<>();
+            boolean deleteCheck = false;
+            try {
+                // 파일 삭제시, 이미지 파일일 경우, 원본 이미지와 , 썸네일 이미지 2개 있어서
+                // 이미지 파일 인지 여부를 확인 후, 이미지 이면, 썸네일도 같이 제거해야함.
+                String contentType = Files.probeContentType(resource.getFile().toPath());
+                // 삭제 여부를 업데이트
+                // 원본 파일을 제거하는 기능. (실제 물리 파일 삭제 )
+                deleteCheck =resource.getFile().delete();
+
+                if (contentType.startsWith("image")) {
+                    // 썸네일 파일을 생성해서, 파일 클래스로 삭제를 진행.
+                    // uploadPath : C:\\upload\springTest
+                    // File.separator : C:\\upload\springTest\test1.jpg
+                    File thumbFile = new File(uploadPath+ File.separator,"s_"+ filename);
+                    // 실제 물리 파일 삭제
+                    thumbFile.delete();
+                }
+            }
+            catch (Exception e) {
+                log.error(e.getMessage());
+            }
+            resultMap.put("result", deleteCheck);
+//            return resultMap;
+        }
     }
 
 }
