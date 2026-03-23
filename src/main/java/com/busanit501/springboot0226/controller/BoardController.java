@@ -109,8 +109,17 @@ public class BoardController {
         log.info("BoardController 에서, remove 작업중");
 
         Long bno = boardDTO.getBno();
+
+        // 실무에서, 삭제시, 먼저 DB 의 내용먼저 삭제 후, 그다음에, 물리파일 삭제 하기.
+        // 이유는 만약) 작업중 오류가 발생했을 때, DB에서 삭제가 되어야 정상적으로 화면에서, 출력이 안됨.
+        // 2) 만약, DB 삭제가 이루어지지 않고, 먼저 물리 파일만, 삭제가 된 상황이면,
+        //  화면에서, 없는 파일을 계속 가리킵니다. 그러면, 출력시 오류가 발생 되거나, 또는 UX 가 안좋습니다.
+
+        // 순서1
+        // 데이터베이스 삭제하고,
         boardService.remove(bno);
 
+        // 순서2
         // 게시글에 첨부된 이미지 파일도 삭제.
         //추가
         List<String> fileNames = boardDTO.getFileNames();
