@@ -276,7 +276,54 @@
         uploadResult.innerHTML += str
     }
 
+    // 순서3,
+    // 수정 작업,
+    //수정 하기 버튼 클릭시, 이벤트 작업.
+    document.querySelector(".modBtn").addEventListener("click", function (e) {
+        e.preventDefault()
+        e.stopPropagation()
 
+        formObj.action = `/board/modify?${link}`
+
+        // 첨부파일을 히든으로 추가., 정의해야 함.
+        appendFileData()
+
+        // 삭제 대상 파일 삭제하는 함수 정의,
+        callRemoveFiles()
+
+        formObj.method = 'post'
+        formObj.submit()
+    })
+
+    //순서4
+    // appendFileData
+    // 추가된 파일 이미지를 히든으로 추가해주는 함수.
+    function appendFileData() {
+        //  히든으로 추가된 첨부 이미지
+        const target = document.querySelector(".uploadHidden")
+        // 추가할 이미지들의 모든 파일
+        const uploadFiles = uploadResult.querySelectorAll("img")
+
+        // 첨부할 문자열, 태그를 저장할 변수 선언.
+        let str = ''
+
+        for (let i = 0; i < uploadFiles.length; i++) {
+            const uploadFile = uploadFiles[i]
+            const imgLink = uploadFile.getAttribute("data-src")
+// 서버에서, BoardDTO에서, 받는 매개변수 , private List<String> fileNames;
+            str += `<input type='hidden' name='fileNames' value="${imgLink}"/>`
+        }
+        target.innerHTML = str;
+    }
+
+    // 순서5
+    // callRemoveFiles()
+    function callRemoveFiles() {
+        removeFileList.forEach(
+            ({uuid, fileName}) => {
+                removeFileToServer({uuid, fileName})
+            })
+    }
 
 </script>
 </body>
