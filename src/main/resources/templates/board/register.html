@@ -190,6 +190,38 @@
 
     }
 
+    //순서4-2, 글작성시, 폼 내부에서,
+    // 기본 전송 버튼 이용해서, 문제가 발생해서, 분리. -> div 태그 안닫아서 문제였고 수정했음.
+    // 첨부된 이미지를 , 서버에 전달하기.
+    // 첨부된 이미지를 , 특정 요소에 숨겨서 , 글과 이미지를 같이 전달하기.
+    document.querySelector(".submitBtn").addEventListener("click",
+        function (e) {
+            e.preventDefault()
+            e.stopPropagation()
+
+            // 기본 글작성 내용이랑, + 첨부된 이미지들도 다 같이 전송할 예정.
+            // 첨부된 이미지는 innerHTML 이용해서, 레스트로 첨부를 할 예정.
+
+            // 첨부 이미지의 파일들을 붙여 둘 공간
+            const target = document.querySelector(".uploadHidden")
+            // 모든 섬네일 이미지를 가리킴.
+            const uploadFiles = uploadResult.querySelectorAll("img")
+
+            // 첨부할 문자열, 태그를 저장할 변수 선언.
+            let str = ''
+
+            for(let i = 0; i < uploadFiles.length; i++) {
+                const uploadFile = uploadFiles[i]
+                const imgLink = uploadFile.getAttribute("data-src")
+// 서버에서, BoardDTO에서, 받는 매개변수 , private List<String> fileNames;
+                str += `<input type='hidden' name='fileNames' value="${imgLink}"/>`
+            }
+            target.innerHTML = str;
+
+            document.querySelector("form").submit();
+
+        })
+
 
 
 </script>
